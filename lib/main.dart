@@ -84,7 +84,7 @@ class _LoginDemoState extends State<LoginDemo> {
               child: TextButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => PrincipalWidget()));
+                      MaterialPageRoute(builder: (_) => RegistroPontoWidget()));
                 },
                 child: const Text(
                   'Login',
