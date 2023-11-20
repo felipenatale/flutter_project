@@ -12,26 +12,27 @@ class RegisterListWidget extends StatefulWidget {
 }
 
 class _RegisterListWidgetState extends State<RegisterListWidget> {
-  
   RegistroDao? dao;
   List<Registro> registros = [];
   final title = const Text("Registros");
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _initializDatabase();
   }
 
-  _initializDatabase() async{
-    final database = await $FloorRegistroDatabase.databaseBuilder('registro_database.db').build();
+  _initializDatabase() async {
+    final database = await $FloorRegistroDatabase
+        .databaseBuilder('registro_database.db')
+        .build();
     dao = database.registroDao;
 
     await _getAllRegistros();
   }
 
-  _getAllRegistros() async{
-    if(dao != null){
+  _getAllRegistros() async {
+    if (dao != null) {
       final result = await dao!.findAll();
       setState(() {
         registros = result;
@@ -39,8 +40,8 @@ class _RegisterListWidgetState extends State<RegisterListWidget> {
     }
   }
 
-  _deleteBook(Registro book) async{
-    if(dao != null){
+  _deleteRegistry(Registro book) async {
+    if (dao != null) {
       await dao!.deleteBook(book);
       _getAllRegistros();
     }
@@ -49,6 +50,7 @@ class _RegisterListWidgetState extends State<RegisterListWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: title,
         backgroundColor: const Color(0xFFFB7833),
@@ -67,18 +69,20 @@ class _RegisterListWidgetState extends State<RegisterListWidget> {
 
   Widget _buildItem(index) {
     Registro registro = registros[index];
+    String registryDate = registro.date;
     return Padding(
-        padding: listViewPadding,
-        child: Card(
-          child: ListTile(
-            leading: Text(registro.id != null ? registro.id!.toString() : ""),
-            title: Text(registro.condominio),
-            subtitle: Text("${registro.status} as: ${registro.date}"),
-            onLongPress: (){
-              _deleteBook(registro);
-            },
-          ),
+      padding: listViewPadding,
+      child: Card(
+        child: ListTile(
+          leading: Text(registro.id != null ? registro.id!.toString() : ""),
+          title: Text(registro.condominio),
+          subtitle: Text(
+              "${registro.status} as: ${registryDate.substring(0, registro.date.indexOf('.'))}"),
+          onLongPress: () {
+            _deleteRegistry(registro);
+          },
         ),
-      );
+      ),
+    );
   }
 }

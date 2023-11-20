@@ -6,6 +6,7 @@ class ExitApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Registro de Ponto'),
         backgroundColor: const Color(0xFFFB7833),

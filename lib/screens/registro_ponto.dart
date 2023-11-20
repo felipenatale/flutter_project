@@ -150,6 +150,7 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: const Size(700, 1400));
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: paddingRegistroPonto,
         child: Column(

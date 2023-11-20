@@ -33,6 +33,7 @@ class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
         currentDate.substring(0, currentDate.indexOf('.'));
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Registro de Ponto'),
         backgroundColor: const Color(0xFFFB7833),
@@ -122,7 +123,8 @@ class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterListWidget()),
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterListWidget()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -136,7 +138,6 @@ class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
                   child: const Text('Consultar Registros'),
                 )
               ],
-              
             )
           ],
         ),
