@@ -2,65 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_final_project/screens/exit_app.dart';
 import 'package:geolocator/geolocator.dart';
 
-Future<Position> _determinePosition() async {
-  bool serviceEnabled;
-  LocationPermission permission;
-
-  // Test if location services are enabled.
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    // Location services are not enabled don't continue
-    // accessing the position and request users of the
-    // App to enable the location services.
-    return Future.error('Location services are disabled.');
-  }
-
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      // Permissions are denied, next time you could try
-      // requesting permissions again (this is also where
-      // Android's shouldShowRequestPermissionRationale
-      // returned true. According to Android guidelines
-      // your App should show an explanatory UI now.
-      return Future.error('Location permissions are denied');
-    }
-  }
-
-  if (permission == LocationPermission.deniedForever) {
-    // Permissions are denied forever, handle appropriately.
-    return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
-  }
-
-  // When we reach here, permissions are granted and we can
-  // continue accessing the position of the device.
-
-  return await Geolocator.getCurrentPosition();
-}
-
 class RegistroEntradaWidget extends StatefulWidget {
-  const RegistroEntradaWidget({super.key});
+  final String latitude;
+  final String longitude;
+  final String condominio;
+  const RegistroEntradaWidget(
+      {super.key,
+      required this.latitude,
+      required this.longitude,
+      required this.condominio});
+  //const RegistroEntradaWidget({super.key});
 
   @override
   State<RegistroEntradaWidget> createState() => _RegistroEntradaWidgetState();
 }
 
 class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
-  String _latitude = '';
-  String _longitude = '';
-
   @override
   void initState() {
-    _determinePosition().then((Position position) {
-      setState(() {
-        _latitude = position.latitude.toString();
-        _longitude = position.longitude.toString();
-      });
-      print(position.latitude);
-      print(position.longitude);
-    });
     super.initState();
   }
 
@@ -103,6 +62,13 @@ class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
                 ),
                 const SizedBox(height: 35),
                 Text(
+                  'Local: ${widget.condominio}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                Text(
                   'Data: $formattedDateTime',
                   style: const TextStyle(
                     fontSize: 16,
@@ -110,14 +76,15 @@ class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
                   ),
                 ),
                 Text(
-                  'Latitude: $_latitude',
+                  'Latitude: ${widget.latitude}',
+                  //widget.currentLocation,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
                 Text(
-                  'Longitude: $_longitude',
+                  'Longitude: ${widget.longitude}',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
