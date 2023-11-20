@@ -114,6 +114,18 @@ class _$RegistroDao extends RegistroDao {
                   'longitude': item.longitude,
                   'status': item.status,
                   'date': item.date
+                }),
+        _registroDeletionAdapter = DeletionAdapter(
+            database,
+            'Registro',
+            ['id'],
+            (Registro item) => <String, Object?>{
+                  'id': item.id,
+                  'condominio': item.condominio,
+                  'latitude': item.latitude,
+                  'longitude': item.longitude,
+                  'status': item.status,
+                  'date': item.date
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -123,6 +135,8 @@ class _$RegistroDao extends RegistroDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<Registro> _registroInsertionAdapter;
+
+  final DeletionAdapter<Registro> _registroDeletionAdapter;
 
   @override
   Future<List<Registro>> findAll() async {
@@ -152,5 +166,10 @@ class _$RegistroDao extends RegistroDao {
   @override
   Future<void> insertRegistro(Registro registro) async {
     await _registroInsertionAdapter.insert(registro, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteBook(Registro registro) async {
+    await _registroDeletionAdapter.delete(registro);
   }
 }

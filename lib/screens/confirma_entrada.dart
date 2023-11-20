@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_final_project/screens/exit_app.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_final_project/screens/lista_registros.dart';
 
 class RegistroEntradaWidget extends StatefulWidget {
   final String latitude;
@@ -115,8 +116,27 @@ class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
                     ),
                   ),
                   child: const Text('Sair'),
+                ),
+                const SizedBox(height: 50),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const RegisterListWidget()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
+                    backgroundColor: const Color(0xFFFB7833),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: const Text('Consultar Registros'),
                 )
               ],
+              
             )
           ],
         ),

@@ -32,3 +32,5 @@ final borderRadiusAllScreen = BorderRadius.circular(10.0);
 const titleButtonRegister = "Entrada";
 const colorElevatedButtonRegister = Colors.blue;
 const paddingElevatedButtonRegister = EdgeInsets.symmetric(horizontal: 10, vertical: 15);
+
+const listViewPadding = EdgeInsets.symmetric(horizontal: 8);

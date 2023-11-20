@@ -11,4 +11,7 @@ abstract class RegistroDao {
 
   @insert
   Future<void> insertRegistro(Registro registro);
+
+  @delete
+  Future<void> deleteBook(Registro registro);
 }

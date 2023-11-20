@@ -6,7 +6,7 @@ import 'package:flutter_final_project/database/app_database.dart';
 import 'package:flutter_final_project/models/condominio.dart';
 import 'package:flutter_final_project/models/registro.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_final_project/screens/confirm_entrada.dart';
+import 'package:flutter_final_project/screens/confirma_entrada.dart';
 import 'package:flutter_final_project/utils/constants.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -137,7 +137,6 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
         }
       }).toList();
     } else {
-      print('entrou checkCondomioToRegistry else');
       condominios.map((condominio) {
         return DropdownMenuItem<String>(
           value: condominio.nome,
