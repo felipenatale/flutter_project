@@ -39,7 +39,7 @@ class _RegisterListWidgetState extends State<RegisterListWidget> {
     }
   }
 
-  _deleteBook(Registro book) async{
+  _deleteRegistro(Registro book) async{
     if(dao != null){
       await dao!.deleteBook(book);
       _getAllRegistros();
@@ -75,7 +75,7 @@ class _RegisterListWidgetState extends State<RegisterListWidget> {
             title: Text(registro.condominio),
             subtitle: Text("${registro.status} as: ${registro.date}"),
             onLongPress: (){
-              _deleteBook(registro);
+              _deleteRegistro(registro);
             },
           ),
         ),
