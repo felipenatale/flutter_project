@@ -53,6 +53,8 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
     await _addCondominios();
     await _getAllCondominios();
     await _getRegistro();
+
+    print(registros);
   }
 
   _addCondominios() async {
@@ -87,8 +89,6 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
   _addRegistro() async {
     String currentStatus = 'Saida';
 
-    print(registros);
-    print(condominios);
     if (registros.isEmpty) {
       currentStatus = 'Entrada';
       setState(() {
@@ -107,11 +107,6 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
         });
       }
     }
-    print(selectedCondominio);
-    print(_latitude);
-    print(_longitude);
-    print(currentStatus);
-    print(DateTime.now().toString());
 
     final registro = Registro(selectedCondominio, _latitude, _longitude,
         currentStatus, DateTime.now().toString(), null);
@@ -123,12 +118,10 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
     if (registros.isNotEmpty) {
       // || registros[0].status == 'Saida'
       setState(() {
-        print(registros);
         condomioName = registros[0].condominio;
         status = registros[0].status;
       });
       condominios.map((condominio) {
-        print(condomioName);
         if (condominio.nome == condomioName && status == 'Entrada') {
           return DropdownMenuItem<String>(
             value: condomioName,
@@ -187,7 +180,7 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
                       selectedCondominio = value.toString();
                     });
                   },
-                  // items: checkCondomioToRegistry(),
+                  //items: checkCondomioToRegistry(),
                   items: condominios.map((condominio) {
                     return DropdownMenuItem<String>(
                       value: condominio.nome,

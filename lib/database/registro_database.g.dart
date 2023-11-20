@@ -169,7 +169,7 @@ class _$RegistroDao extends RegistroDao {
   }
 
   @override
-  Future<void> deleteBook(Registro registro) async {
+  Future<void> deleteRegistro(Registro registro) async {
     await _registroDeletionAdapter.delete(registro);
   }
 }
