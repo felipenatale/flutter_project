@@ -6,11 +6,13 @@ class RegistroEntradaWidget extends StatefulWidget {
   final String latitude;
   final String longitude;
   final String condominio;
+  final String status;
   const RegistroEntradaWidget(
       {super.key,
       required this.latitude,
       required this.longitude,
-      required this.condominio});
+      required this.condominio,
+      required this.status});
   //const RegistroEntradaWidget({super.key});
 
   @override
@@ -53,9 +55,9 @@ class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
             const SizedBox(height: 45),
             Column(
               children: [
-                const Text(
-                  'Entrada processada com sucesso',
-                  style: TextStyle(
+                Text(
+                  '${widget.status} processada com sucesso',
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),

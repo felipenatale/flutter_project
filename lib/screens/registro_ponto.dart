@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_final_project/dao/condominio_dao.dart';
+import 'package:flutter_final_project/dao/registro_dao.dart';
+import 'package:flutter_final_project/database/registro_database.dart';
 import 'package:flutter_final_project/database/app_database.dart';
 import 'package:flutter_final_project/models/condominio.dart';
+import 'package:flutter_final_project/models/registro.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_final_project/screens/confirm_entrada.dart';
 import 'package:flutter_final_project/utils/constants.dart';
@@ -16,10 +19,14 @@ class RegistroPontoWidget extends StatefulWidget {
 
 class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
   CondominioDao? condominioDao;
+  RegistroDao? registroDao;
   List<Condominio> condominios = [];
+  List<Registro> registros = [];
   String _latitude = '';
   String _longitude = '';
   String selectedCondominio = '';
+  String condomioName = '';
+  String status = '';
 
   @override
   void initState() {
@@ -28,8 +35,6 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
         _latitude = position.latitude.toString();
         _longitude = position.longitude.toString();
       });
-      print(position.latitude);
-      print(position.longitude);
     });
     super.initState();
     _initializDatabase();
@@ -40,8 +45,14 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
         await $FloorAppDatabase.databaseBuilder('app_database.db').build();
     condominioDao = database.condominioDao;
 
+    final databaseRegistry = await $FloorRegistroDatabase
+        .databaseBuilder('registro_database.db')
+        .build();
+    registroDao = databaseRegistry.registroDao;
+
     await _addCondominios();
     await _getAllCondominios();
+    await _getRegistro();
   }
 
   _addCondominios() async {
@@ -61,6 +72,78 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
       setState(() {
         condominios = result;
       });
+    }
+  }
+
+  _getRegistro() async {
+    if (registroDao != null) {
+      final result = await registroDao!.findLastEntrace();
+      setState(() {
+        registros = result;
+      });
+    }
+  }
+
+  _addRegistro() async {
+    String currentStatus = 'Saida';
+
+    print(registros);
+    print(condominios);
+    if (registros.isEmpty) {
+      currentStatus = 'Entrada';
+      setState(() {
+        status = 'Entrada';
+      });
+    } else {
+      print('_addRegistro else');
+      if (registros[0].status == 'Saida') {
+        currentStatus = 'Entrada';
+        setState(() {
+          status = 'Entrada';
+        });
+      } else {
+        setState(() {
+          status = 'Saida';
+        });
+      }
+    }
+    print(selectedCondominio);
+    print(_latitude);
+    print(_longitude);
+    print(currentStatus);
+    print(DateTime.now().toString());
+
+    final registro = Registro(selectedCondominio, _latitude, _longitude,
+        currentStatus, DateTime.now().toString(), null);
+    await registroDao!.insertRegistro(registro);
+  }
+
+  checkCondomioToRegistry() {
+    print('entrou checkCondomioToRegistry');
+    if (registros.isNotEmpty) {
+      // || registros[0].status == 'Saida'
+      setState(() {
+        print(registros);
+        condomioName = registros[0].condominio;
+        status = registros[0].status;
+      });
+      condominios.map((condominio) {
+        print(condomioName);
+        if (condominio.nome == condomioName && status == 'Entrada') {
+          return DropdownMenuItem<String>(
+            value: condomioName,
+            child: Text(condomioName),
+          );
+        }
+      }).toList();
+    } else {
+      print('entrou checkCondomioToRegistry else');
+      condominios.map((condominio) {
+        return DropdownMenuItem<String>(
+          value: condominio.nome,
+          child: Text(condominio.nome),
+        );
+      }).toList();
     }
   }
 
@@ -104,7 +187,8 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
                       selectedCondominio = value.toString();
                     });
                   },
-                  items: condominios.map((Condominio condominio) {
+                  // items: checkCondomioToRegistry(),
+                  items: condominios.map((condominio) {
                     return DropdownMenuItem<String>(
                       value: condominio.nome,
                       child: Text(condominio.nome),
@@ -123,16 +207,17 @@ class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () => {
+                    _addRegistro(),
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => RegistroEntradaWidget(
-                                latitude: _latitude,
-                                longitude: _longitude,
-                                condominio: selectedCondominio,
-                              )),
-                    );
+                              latitude: _latitude,
+                              longitude: _longitude,
+                              condominio: selectedCondominio,
+                              status: status)),
+                    )
                   },
                   style: ElevatedButton.styleFrom(
                     padding: paddingElevatedButtonRegister,

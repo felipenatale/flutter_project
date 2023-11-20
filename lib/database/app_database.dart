@@ -8,6 +8,6 @@ import 'package:flutter_final_project/models/condominio.dart';
 part 'app_database.g.dart';
 
 @Database(version: 1, entities: [Condominio])
-abstract class AppDatabase extends FloorDatabase{
+abstract class AppDatabase extends FloorDatabase {
   CondominioDao get condominioDao;
 }
