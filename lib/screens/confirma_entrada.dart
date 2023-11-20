@@ -37,6 +37,7 @@ class _RegistroEntradaWidgetState extends State<RegistroEntradaWidget> {
       appBar: AppBar(
         title: const Text('Registro de Ponto'),
         backgroundColor: const Color(0xFFFB7833),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
