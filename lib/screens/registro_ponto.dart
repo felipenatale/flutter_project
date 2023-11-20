@@ -1,23 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_final_project/dao/condominio_dao.dart';
+import 'package:flutter_final_project/database/app_database.dart';
+import 'package:flutter_final_project/models/condominio.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_final_project/screens/confirm_entrada.dart';
+import 'package:flutter_final_project/utils/constants.dart';
 
 class RegistroPontoWidget extends StatefulWidget {
   const RegistroPontoWidget({Key? key}) : super(key: key);
 
   @override
-  DropDownCondominioState createState() => DropDownCondominioState();
+  State<RegistroPontoWidget> createState() => _RegistroPontoWidgetState();
 }
 
-class DropDownCondominioState extends State<RegistroPontoWidget> {
-  String selectedValue = 'Viva Mais';
-  List<String> options = ['Viva Mais', 'Inspire', 'Nações Clube'];
+class _RegistroPontoWidgetState extends State<RegistroPontoWidget> {
+
+  CondominioDao? condominioDao;
+  List<Condominio> condominios = [];
+
+  @override
+  void initState(){
+    super.initState();
+    _initializDatabase();
+  }
+
+  _initializDatabase() async{
+    final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+    condominioDao = database.condominioDao;
+
+    await _addCondominios();
+    await _getAllCondominios();
+  }
+
+  _addCondominios() async{
+    if(condominioDao != null) {
+      final existeCondominios = await condominioDao!.findAll();
+      if (existeCondominios.isEmpty) {
+        await condominioDao!.insertCondominio(Condominio("Viva Mais", null));
+        await condominioDao!.insertCondominio(Condominio("Inspire", null));
+        await condominioDao!.insertCondominio(Condominio("Nações Clube", null));
+      }
+    }
+  }
+
+  _getAllCondominios() async{
+    if(condominioDao != null){
+      final result = await condominioDao!.findAll();
+      setState(() {
+        condominios = result;
+      });
+    }
+  }
+
+  final widgetRegistroEntrada = const RegistroEntradaWidget();
 
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: const Size(700, 1400));
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: paddingRegistroPonto,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -30,11 +72,8 @@ class DropDownCondominioState extends State<RegistroPontoWidget> {
                   height: 200,
                 ),
                 const Text(
-                  'Registro Ponto',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  titleScreanResgister,
+                  style: textStyletitleScreanResgister,
                 ),
               ],
             ),
@@ -43,28 +82,24 @@ class DropDownCondominioState extends State<RegistroPontoWidget> {
             Column(
               children: [
                 const Text(
-                  'Condomínio',
-                  style: TextStyle(fontSize: 24),
-                  textAlign: TextAlign.left,
+                  subtitleCondominium,
+                  style: textStyleSubtitleCondominium,
+                  textAlign: textAlingSubtitleCondominium,
                 ),
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
-                  value: 'Viva Mais',
                   onChanged: (String? newValue) {
                     // Handle dropdown value change
                   },
-                  items: options.map<DropdownMenuItem<String>>((String value) {
+                  items: condominios.map((Condominio condominio){
                     return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                      value: condominio.id.toString(),
+                      child: Text(condominio.nome),
                     );
                   }).toList(),
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 20),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
+                    contentPadding: paddingInputDecorationDropDown,
+                    border: OutlineInputBorder(borderRadius: borderRadiusAllScreen),
                   ),
                 ),
               ],
@@ -78,166 +113,18 @@ class DropDownCondominioState extends State<RegistroPontoWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const RegistroPontoEntrada()),
+                          builder: (context) => widgetRegistroEntrada),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 15),
-                    backgroundColor: const Color(0xFFFB7833),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
+                    padding: paddingElevatedButtonRegister,
+                    backgroundColor: colorElevatedButtonRegister,
+                    shape: RoundedRectangleBorder(borderRadius: borderRadiusAllScreen),
                   ),
-                  child: const Text('Entrada'),
+                  child: const Text(titleButtonRegister),
                 )
               ],
             )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-class RegistroPontoEntrada extends StatelessWidget {
-  const RegistroPontoEntrada({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    String formattedDateTime =
-        "2023-11-18 12:34";
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registro de Ponto'),
-        backgroundColor: const Color(0xFFFB7833),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Primeira Coluna
-            Column(
-              children: [
-                Image.asset(
-                  'assets/images/logo.png',
-                  width: 300,
-                  height: 200,
-                ),
-              ],
-            ),
-            // Segunda coluna
-            const SizedBox(height: 45),
-            Column(
-              children: [
-                const Text(
-                  'Entrada processada com sucesso',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 35),
-                Text(
-                  formattedDateTime,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ],
-            ),
-            // Terceira coluna
-            const SizedBox(height: 45),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ExitApp()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 15),
-                    backgroundColor: const Color(0xFFFB7833),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: const Text('Sair'),
-                )
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-class ExitApp extends StatelessWidget {
-  const ExitApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registro de Ponto'),
-        backgroundColor: const Color(0xFFFB7833),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(17.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Você realmente deseja sair do SindHub?',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 15),
-                    backgroundColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Perform any necessary actions before exiting the app
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 15),
-                    backgroundColor: const Color(0xFFFB7833),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: const Text('Exit'),
-                ),
-              ],
-            ),
           ],
         ),
       ),
